@@ -147,6 +147,22 @@ public:
 	// throws an exception if startIndex + numChars > Length()
 	MyString SubStr(int startIndex, int numChars) const;
 
+	// tolower
+	// Converts the MyString to lower case
+	void tolower();
+
+	// toupper
+	// Converts the MyString to upper case
+	void toupper();
+
+	// getlower
+	// Returns the lower case version of the MyString
+	MyString getlower();
+
+	// getupper
+	// Returns the upper case version of the MyString
+	MyString getupper();
+
 	// OPERATORS
 
 	// = (assignment - takes a MyString or a c style string)

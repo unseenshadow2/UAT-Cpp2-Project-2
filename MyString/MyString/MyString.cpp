@@ -1,7 +1,7 @@
 // MyString.h
 // MyString is a custom string class implementation.
 
-#include <iostream>
+//#include <iostream> - Not sure if I need this...
 #include "MyString.h"
 
 // Import only the things that we need
@@ -15,7 +15,12 @@ using std::istream;
 // initializes this MyString to an empty MyString
 MyString::MyString()
 {
+	_capacity = 16;
+	_length = 0;
 
+	// Allocate the space
+	_string = new char[_capacity];
+	_string[0] = '\0'; // Make sure _string ends in a null character
 }
 
 // parameterized constructors
@@ -24,7 +29,34 @@ MyString::MyString()
 // initializes this MyString to cString
 MyString::MyString(const char * aCString)
 {
+	size_t cStringSize = strlen(aCString); // Avoid having to run the function strlen() multiple times
 
+	if (cStringSize >= 16)
+	{
+		_capacity = cStringSize + 1;
+		_length = cStringSize;
+		_string = new char[_capacity];
+
+		for (int i = 0; i < cStringSize; i++)
+		{
+			_string[i] = aCString[i];
+		}
+
+		_string[_capacity - 1] = '\0';
+	}
+	else
+	{
+		_capacity = 16;
+		_length = cStringSize;
+		_string = new char[_capacity];
+
+		for (int i = 0; i < cStringSize; i++)
+		{
+			_string[i] = aCString[i];
+		}
+
+		_string[_capacity - 1] = '\0';
+	}
 }
 
 // takes an int argument
@@ -32,21 +64,36 @@ MyString::MyString(const char * aCString)
 // initializes this MyString to an empty MyString
 MyString::MyString(int numChars)
 {
+	_capacity = numChars;
+	_length = 0;
 
+	_string = new char[_capacity];
+	_string[0] = '\0';
 }
 
 // copy constructor
 // initializes this MyString to a deep copy of the original
 MyString::MyString(const MyString & original)
 {
+	const char * originalString = original._cstr();
 
+	_capacity = original.CurrentCapacity();
+	_length = original.Length();
+
+	_string = new char[_capacity];
+	for (int i = 0; i < _capacity; i++)
+	{
+		_string[i] = originalString[i];
+	}
+
+	delete[] originalString;
 }
 
 // DESTRUCTOR
 // dealocate dynamic storage
 MyString::~MyString()
 {
-
+	delete[] _string;
 }
 
 // METHODS
@@ -86,7 +133,7 @@ void MyString::Assign(const char * const aCString)
 // throws an exception if index is < 0 or >= _length
 char MyString::At(int index) const
 {
-
+	return '\0';
 }
 
 // Clear
@@ -115,7 +162,7 @@ void MyString::Clear(int newCapacity)
 //   alphabetically greater than this MyString
 int MyString::Compare(const MyString & aMyString)
 {
-
+	return 0;
 }
 
 // CurrentCapacity
@@ -123,7 +170,7 @@ int MyString::Compare(const MyString & aMyString)
 // without reallocating
 int MyString::CurrentCapacity() const
 {
-
+	return 0;
 }
 
 // Equals
@@ -133,7 +180,7 @@ int MyString::CurrentCapacity() const
 //   otherwise it returns (false).
 bool MyString::Equals(const MyString & aMyString) const
 {
-
+	return false;
 }
 
 // Takes a c style string argument
@@ -142,7 +189,7 @@ bool MyString::Equals(const MyString & aMyString) const
 //   otherwise it returns (false).
 bool MyString::Equals(const char * const aCString) const
 {
-
+	return false;
 }
 
 // Find
@@ -152,7 +199,7 @@ bool MyString::Equals(const char * const aCString) const
 //   in this MyString. If it is not found, then returns -1.
 int MyString::Find(const MyString & aMyString) const
 {
-
+	return 0;
 }
 
 // Insert
@@ -169,7 +216,7 @@ void MyString::Insert(const MyString & aMyString, int index)
 // Returns the number (int) of chars in this MyString
 int MyString::Length(void) const
 {
-
+	return 0;
 }
 
 // Replace
@@ -195,7 +242,38 @@ void MyString::Replace(int startIndex, int numChars, const MyString & aMyString)
 // throws an exception if startIndex + numChars > Length()
 MyString MyString::SubStr(int startIndex, int numChars) const
 {
+	MyString placeholder;
+	return placeholder;
+}
 
+// tolower
+// Converts the MyString to lower case
+void MyString::tolower()
+{
+
+}
+
+// toupper
+// Converts the MyString to upper case
+void MyString::toupper()
+{
+
+}
+
+// getlower
+// Returns the lower case version of the MyString
+MyString MyString::getlower()
+{
+	MyString placeholder;
+	return placeholder;
+}
+
+// getupper
+// Returns the upper case version of the MyString
+MyString MyString::getupper()
+{
+	MyString placeholder;
+	return placeholder;
 }
 
 // OPERATORS
@@ -203,23 +281,27 @@ MyString MyString::SubStr(int startIndex, int numChars) const
 // = (assignment - takes a MyString or a c style string)
 MyString MyString::operator= (const MyString & aMyString)
 {
-
+	MyString placeholder;
+	return placeholder;
 }
 
 MyString MyString::operator= (const char *  const aCString)
 {
-
+	MyString placeholder;
+	return placeholder;
 }
 
 // +, += (concatenation - takes a MyString or a c style string)
 MyString MyString::operator+ (const MyString & aMyString)
 {
-
+	MyString placeholder;
+	return placeholder;
 }
 
 MyString MyString::operator+= (const MyString & aMyString)
 {
-
+	MyString placeholder;
+	return placeholder;
 }
 
 // [] (read/write char access by index)
@@ -227,53 +309,61 @@ MyString MyString::operator+= (const MyString & aMyString)
 // throws an exception if index is < 0 or >= _length
 char & MyString::operator[] (int index) const
 {
-
+	char placeholder = '\0';
+	return placeholder;
 }
 
 // >, <, >=, <=, ==, != (boolean relational test operators)
 bool MyString::operator> (const MyString & aMyString)
 {
-
+	return false;
 }
 
 bool MyString::operator< (const MyString & aMyString)
 {
-
+	return false;
 }
 
 bool MyString::operator>= (const MyString & aMyString)
 {
-
+	return false;
 }
 
 bool MyString::operator<= (const MyString & aMyString)
 {
-
+	return false;
 }
 
 bool MyString::operator== (const MyString & aMyString)
 {
-
+	return false;
 }
 
 bool MyString::operator!= (const MyString & aMyString)
 {
-
+	return false;
 }
 
 // returns a pointer to the underlying c-style string
 const char* MyString::_cstr() const
 {
+	if (_string[0] == '\0')
+	{
+		return '\0';
+	}
 
+	return _string;
 }
 
 // <<, >> stream insertion and extraction
 ostream & operator<< (ostream & os, const MyString & aMyString)
 {
-
+	std::cout << (aMyString._cstr()) << std::endl;
+	os << aMyString._cstr();
+	return os;
 }
 
 istream & operator>> (istream & is, MyString & aMyString)
 {
-
+	return is; // Placeholder
 }
