@@ -1,4 +1,7 @@
-// MyString.h
+// The size of buffers, in characters
+#define BUFFER_SIZE 500
+
+// MyString.cpp
 // MyString is a custom string class implementation.
 
 //#include <iostream> - Not sure if I need this...
@@ -7,6 +10,14 @@
 // Import only the things that we need
 using std::ostream;
 using std::istream;
+
+// Signal Handler
+// Used to throw exceptions that c++ can catch
+void signalHandler(int signal)
+{
+	std::cout << "You're out of bounds, mate." << std::endl;
+	throw "!Access Violation!";
+}
 
 // CONSTRUCTORS
 
@@ -29,20 +40,22 @@ MyString::MyString()
 // initializes this MyString to cString
 MyString::MyString(const char * aCString)
 {
-	size_t cStringSize = strlen(aCString); // Avoid having to run the function strlen() multiple times
+	size_t cStringSize = MyString::cStrLen(aCString); // Avoid having to run the function cStrlen() multiple times
 
+	// Just adjust the belt a little
 	if (cStringSize >= 16)
 	{
 		_capacity = cStringSize + 1;
 		_length = cStringSize;
 		_string = new char[_capacity];
 
+		// Deep copy
 		for (int i = 0; i < cStringSize; i++)
 		{
 			_string[i] = aCString[i];
 		}
 
-		_string[_capacity - 1] = '\0';
+		_string[_length] = '\0';
 	}
 	else
 	{
@@ -50,12 +63,13 @@ MyString::MyString(const char * aCString)
 		_length = cStringSize;
 		_string = new char[_capacity];
 
+		// Deep copy
 		for (int i = 0; i < cStringSize; i++)
 		{
 			_string[i] = aCString[i];
 		}
 
-		_string[_capacity - 1] = '\0';
+		_string[_length] = '\0';
 	}
 }
 
@@ -64,7 +78,7 @@ MyString::MyString(const char * aCString)
 // initializes this MyString to an empty MyString
 MyString::MyString(int numChars)
 {
-	_capacity = numChars;
+	_capacity = numChars; // I am THIS big!
 	_length = 0;
 
 	_string = new char[_capacity];
@@ -75,18 +89,21 @@ MyString::MyString(int numChars)
 // initializes this MyString to a deep copy of the original
 MyString::MyString(const MyString & original)
 {
+	// Gain manipulatable version of the original MyString's _string
 	const char * originalString = original._cstr();
 
+	// Set numeric values
 	_capacity = original.CurrentCapacity();
 	_length = original.Length();
-
 	_string = new char[_capacity];
-	for (int i = 0; i < _capacity; i++)
+
+	// Deep copy
+	for (int i = 0; i < _length; i++)
 	{
 		_string[i] = originalString[i];
 	}
 
-	delete[] originalString;
+	_string[_length] = '\0';
 }
 
 // DESTRUCTOR
@@ -170,7 +187,7 @@ int MyString::Compare(const MyString & aMyString)
 // without reallocating
 int MyString::CurrentCapacity() const
 {
-	return 0;
+	return _capacity;
 }
 
 // Equals
@@ -216,7 +233,7 @@ void MyString::Insert(const MyString & aMyString, int index)
 // Returns the number (int) of chars in this MyString
 int MyString::Length(void) const
 {
-	return 0;
+	return _length;
 }
 
 // Replace
@@ -277,18 +294,51 @@ MyString MyString::getupper()
 }
 
 // OPERATORS
+// Working in "this"
 
 // = (assignment - takes a MyString or a c style string)
 MyString MyString::operator= (const MyString & aMyString)
 {
-	MyString placeholder;
-	return placeholder;
+	// Get the numeric attributes
+	(*this)._length = aMyString.Length();
+	(*this)._capacity = aMyString.CurrentCapacity();
+
+	// Restart this's _string
+	delete[] (*this)._string;
+	(*this)._string = new char[(*this)._capacity];
+
+	// Deep copy
+	for (int i = 0; i < (*this).Length(); i++)
+	{
+		(*this)._string[i] = aMyString._cstr()[i];
+	}
+
+	// Add null character
+	(*this)._string[(*this)._length] = '\0';
+
+	return *this;
 }
 
 MyString MyString::operator= (const char *  const aCString)
 {
-	MyString placeholder;
-	return placeholder;
+	// Get the numeric attributes
+	_length = MyString::cStrLen(aCString);
+	_capacity = _length + 1;
+
+	// Restart this's _string
+	delete[] _string;
+	_string = new char[_capacity];
+
+	// Deep copy
+	for (int i = 0; i < _length; i++)
+	{
+		_string[i] = aCString[i];
+	}
+	
+	// Add null character
+	_string[_length] = '\0';
+
+	return *this;
 }
 
 // +, += (concatenation - takes a MyString or a c style string)
@@ -347,23 +397,27 @@ bool MyString::operator!= (const MyString & aMyString)
 // returns a pointer to the underlying c-style string
 const char* MyString::_cstr() const
 {
-	if (_string[0] == '\0')
-	{
-		return '\0';
-	}
-
 	return _string;
 }
 
 // <<, >> stream insertion and extraction
 ostream & operator<< (ostream & os, const MyString & aMyString)
 {
-	std::cout << (aMyString._cstr()) << std::endl;
 	os << aMyString._cstr();
 	return os;
 }
 
 istream & operator>> (istream & is, MyString & aMyString)
 {
+	// Create a buffer to hold the stream's information
+	char * buffer = new char[BUFFER_SIZE];
+	is >> buffer;
+
+	// Set the value of aMyString to the buffer's value
+	aMyString = buffer;
+
+	// Cleanup and return
+	delete[] buffer;
+
 	return is; // Placeholder
 }

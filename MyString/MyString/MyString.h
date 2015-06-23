@@ -7,10 +7,15 @@
 #define MYSTRING_H_
 
 #include <iostream>
+#include <signal.h>
 
 // Import only the things that we need
 using std::ostream;
 using std::istream;
+
+// Signal Handler
+// Used to throw exceptions that c++ can catch
+void signalHandler(int signal);
 
 class MyString
 {
@@ -162,6 +167,36 @@ public:
 	// getupper
 	// Returns the upper case version of the MyString
 	MyString getupper();
+
+	// cStrLen
+	// Get the length of a c style string
+	static int MyString::cStrLen(const char * cString)
+	{
+		// Convert out of range signal to exception
+		void(*out_of_range_handler)(int);
+		out_of_range_handler = signal(SIGSEGV, signalHandler);
+
+		int length = 0; // The length of the string
+
+		for (bool isRunning = true; isRunning; length++)
+		{
+			try
+			{
+				if (cString[length] == '\0')
+				{
+					length--;
+					isRunning = false;
+				}
+			}
+			catch (...)
+			{
+				std::cout << "Caught at: " << length << std::endl;
+				isRunning = false;
+			}
+		}
+
+		return length;
+	}
 
 	// OPERATORS
 
