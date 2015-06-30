@@ -250,6 +250,7 @@ void MyString::Replace(int startIndex, int numChars, const MyString & aMyString)
 
 }
 
+// ---- Anthony Start ----
 // Substr
 // Takes two int arguments,
 // An int for the starting index,
@@ -321,18 +322,35 @@ MyString MyString::operator= (const MyString & aMyString)
 
 MyString MyString::operator= (const char *  const aCString)
 {
-	// Get the numeric attributes
-	_length = MyString::cStrLen(aCString);
-	_capacity = _length + 1;
-
-	// Restart this's _string
-	delete[] _string;
-	_string = new char[_capacity];
-
-	// Deep copy
-	for (int i = 0; i < _length; i++)
+	// Check and store aCString size
+	int stringLen = MyString::cStrLen(aCString);
+	
+	if (stringLen >= CurrentCapacity())
 	{
-		_string[i] = aCString[i];
+		// Get the numeric attributes
+		_length = stringLen;
+		_capacity = _length + 1;
+
+		// Restart this's _string
+		delete[] _string;
+		_string = new char[_capacity];
+
+		// Deep copy
+		for (int i = 0; i < _length; i++)
+		{
+			_string[i] = aCString[i];
+		}
+	}
+	else
+	{
+		// Get the numeric attributes (Do not need to change capacity)
+		_length = stringLen;
+
+		// Deep copy
+		for (int i = 0; i < _length; i++)
+		{
+			_string[i] = aCString[i];
+		}
 	}
 	
 	// Add null character
@@ -341,17 +359,46 @@ MyString MyString::operator= (const char *  const aCString)
 	return *this;
 }
 
+// NOTE: Need to test both forms of the + operator and the [] operator
+// IDEA: Try creating a + operator for cStrings
 // +, += (concatenation - takes a MyString or a c style string)
 MyString MyString::operator+ (const MyString & aMyString)
 {
-	MyString placeholder;
-	return placeholder;
+	// Get the total length of the two strings and create a MyString to return
+	int totalLen = this->Length() + aMyString.Length();
+	MyString toReturn = MyString(totalLen + 1);
+
+	// Ensure that the MyString has a length
+	toReturn._length = totalLen;
+
+	// Add the null character
+	toReturn._string[totalLen] = '\0';
+
+	// The current position in relativity to the total
+	int currentPos = 0;
+    
+	// Take the values from this
+	for (int i = 0; i < this->Length(); i++)
+	{
+		toReturn._string[currentPos] = this->_string[i];
+		currentPos++;
+	}
+
+	// Take the values from aMyString
+	for (int i = 0; i < aMyString.Length(); i++)
+	{
+		toReturn[currentPos] = aMyString[i];
+		currentPos++;
+	}
+
+	return toReturn;
 }
 
 MyString MyString::operator+= (const MyString & aMyString)
 {
-	MyString placeholder;
-	return placeholder;
+	*this = (*this) + aMyString;
+
+	return *this;
 }
 
 // [] (read/write char access by index)
@@ -359,8 +406,12 @@ MyString MyString::operator+= (const MyString & aMyString)
 // throws an exception if index is < 0 or >= _length
 char & MyString::operator[] (int index) const
 {
-	char placeholder = '\0';
-	return placeholder;
+	if (index < 0 || index >= this->Length())
+	{
+		throw "!Access Violation!";
+	}
+	
+	return (_string[index]);
 }
 
 // >, <, >=, <=, ==, != (boolean relational test operators)

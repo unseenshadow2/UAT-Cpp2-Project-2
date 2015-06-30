@@ -34,6 +34,18 @@ int main()
 	// Display test result
 	std::cout << t1 << std::endl;
 
+	// Show [] operator
+	std::cout << "[] Operator test: " << t2[2] << std::endl;
+	std::cout << "t2 Length: " << t2.Length() << std::endl;
+	std::cout << "t1 Length: " << t1.Length() << std::endl;
+
+	// Display + and += operators
+	t2 += t1;
+	std::cout << std::endl << "+= operator test: " << t2 << std::endl << std::endl;
+
+	t1 = t2 + t3;
+	std::cout << "+ operator test: " << t1 << std::endl << std::endl;
+
 	std::cout << std::endl;
 	std::system("pause");
 	return 0;

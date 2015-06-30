@@ -1,0 +1,28 @@
+Functions to Create:
+	Append() - 2 Overrides
+	Assign() - 2 Overrides
+	At()
+	Clear() - 2 Overrides
+	Compare
+	Equals() - 2 Overrides
+	Find()
+	Insert()
+	Replace()
+	SubStr()
+	tolower()
+	toupper()
+	getlower()
+	getupper()
+	operator+()
+	operator+=()
+	operator[]()
+	operator>()
+	operator<()
+	operator>=()
+	operator<=()
+	operator==()
+	operator!=()
+
+Anthony:
+
+Chris:
