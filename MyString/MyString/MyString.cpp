@@ -19,6 +19,39 @@ void signalHandler(int signal)
 	throw "!Access Violation!";
 }
 
+// For upper/lower comparisons
+// cases[characterNum][caseNum] - caseNum = 0 is lowercase, caseNum = 1 is uppercase
+const char cases[][2] = 
+{ 
+	{ 'q', 'Q' },
+	{ 'w', 'W' },
+	{ 'e', 'E' },
+	{ 'r', 'R' },
+	{ 't', 'T' },
+	{ 'y', 'Y' },
+	{ 'u', 'U' },
+	{ 'i', 'I' },
+	{ 'o', 'O' },
+	{ 'p', 'P' },
+	{ 'a', 'A' },
+	{ 's', 'S' },
+	{ 'd', 'D' },
+	{ 'f', 'F' },
+	{ 'g', 'G' },
+	{ 'h', 'H' },
+	{ 'j', 'J' },
+	{ 'k', 'K' },
+	{ 'l', 'L' },
+	{ 'z', 'Z' },
+	{ 'x', 'X' },
+	{ 'c', 'C' },
+	{ 'v', 'V' },
+	{ 'b', 'B' },
+	{ 'n', 'N' },
+	{ 'm', 'M' }
+};
+const int casesize = sizeof(cases) / (sizeof(cases[0][0]) * 2); // Get the size of one row
+
 // CONSTRUCTORS
 
 // default constructor
@@ -110,7 +143,14 @@ MyString::MyString(const MyString & original)
 // dealocate dynamic storage
 MyString::~MyString()
 {
-	delete[] _string;
+	if (_capacity <= 1)
+	{
+		delete _string;
+	}
+	else
+	{
+		delete[] _string;
+	}
 }
 
 // METHODS
@@ -260,38 +300,107 @@ void MyString::Replace(int startIndex, int numChars, const MyString & aMyString)
 // throws an exception if startIndex + numChars > Length()
 MyString MyString::SubStr(int startIndex, int numChars) const
 {
-	MyString placeholder;
-	return placeholder;
+	if (numChars > 0)
+	{
+		MyString toReturn(numChars + 1);
+		char * tempString = new char[numChars + 1];
+
+		// Exception check
+		if (startIndex + numChars > this->Length())
+		{
+			throw "!Access Violation!";
+		}
+
+		// Copy the characters
+		for (int i = 0; i < this->Length(); i++)
+		{
+			tempString[i] = this->_string[i + startIndex];
+		}
+
+		// Add the null value
+		tempString[numChars] = '\0';
+
+		// Give toReturn the value
+		toReturn = tempString;
+
+		return toReturn;
+	}
+	else
+	{
+		return nullptr;
+	}
 }
 
 // tolower
 // Converts the MyString to lower case
 void MyString::tolower()
 {
-
+	for (int i = 0; i < _length; i++)
+	{
+		for (int j = 0; j < casesize; j++)
+		{
+			if (_string[i] == cases[j][1])
+			{
+				_string[i] = cases[j][0];
+			}
+		}
+	}
 }
 
 // toupper
 // Converts the MyString to upper case
 void MyString::toupper()
 {
-
+	for (int i = 0; i < _length; i++)
+	{
+		for (int j = 0; j < casesize; j++)
+		{
+			if (_string[i] == cases[j][0])
+			{
+				_string[i] = cases[j][1];
+			}
+		}
+	}
 }
 
 // getlower
 // Returns the lower case version of the MyString
 MyString MyString::getlower()
 {
-	MyString placeholder;
-	return placeholder;
+	MyString toReturn = *this;
+
+	for (int i = 0; i < _length; i++)
+	{
+		for (int j = 0; j < casesize; j++)
+		{
+			if (_string[i] == cases[j][1])
+			{
+				toReturn._string[i] = cases[j][0];
+			}
+		}
+	}
+
+	return toReturn;
 }
 
 // getupper
 // Returns the upper case version of the MyString
 MyString MyString::getupper()
 {
-	MyString placeholder;
-	return placeholder;
+	MyString toReturn = *this;
+
+	for (int i = 0; i < _length; i++)
+	{
+		for (int j = 0; j < casesize; j++)
+		{
+			if (_string[i] == cases[j][0])
+			{
+				toReturn._string[i] = cases[j][1];
+			}
+		}
+	}
+
+	return toReturn;
 }
 
 // OPERATORS
