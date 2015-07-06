@@ -202,11 +202,13 @@ public:
 
 	// = (assignment - takes a MyString or a c style string)
 	MyString operator= (const MyString & aMyString);
-	MyString operator= (const char *  const aCString);
+	MyString operator= (const char * const aCString);
 
 	// +, += (concatenation - takes a MyString or a c style string)
 	MyString operator+ (const MyString & aMyString);
+	MyString operator+ (const char * const aCString);
 	MyString operator+= (const MyString & aMyString);
+	MyString operator+= (const char * const aCString);
 
 	// [] (read/write char access by index)
 	// Returns a reference to the char at that index
@@ -215,11 +217,17 @@ public:
 
 	// >, <, >=, <=, ==, != (boolean relational test operators)
 	bool operator> (const MyString & aMyString);
+	bool operator> (const char * const aCString);
 	bool operator< (const MyString & aMyString);
+	bool operator< (const char * const aCString);
 	bool operator>= (const MyString & aMyString);
+	bool operator>= (const char * const aCString);
 	bool operator<= (const MyString & aMyString);
+	bool operator<= (const char * const aCString);
 	bool operator== (const MyString & aMyString);
+	bool operator== (const char * const aCString);
 	bool operator!= (const MyString & aMyString);
+	bool operator!= (const char * const aCString);
 	
 	// returns a pointer to the underlying c-style string
 	const char* _cstr() const;

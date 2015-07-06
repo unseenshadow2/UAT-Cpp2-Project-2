@@ -468,14 +468,12 @@ MyString MyString::operator= (const char *  const aCString)
 	return *this;
 }
 
-// NOTE: Need to test both forms of the + operator and the [] operator
-// IDEA: Try creating a + operator for cStrings
 // +, += (concatenation - takes a MyString or a c style string)
 MyString MyString::operator+ (const MyString & aMyString)
 {
 	// Get the total length of the two strings and create a MyString to return
 	int totalLen = this->Length() + aMyString.Length();
-	MyString toReturn = MyString(totalLen + 1);
+	MyString toReturn(totalLen + 1);
 
 	// Ensure that the MyString has a length
 	toReturn._length = totalLen;
@@ -503,9 +501,49 @@ MyString MyString::operator+ (const MyString & aMyString)
 	return toReturn;
 }
 
+MyString MyString::operator+ (const char * const aCString)
+{
+	// Get the total length
+	int cStringLen = MyString::cStrLen(aCString);
+	int totalLen = this -> Length() + cStringLen;
+	MyString toReturn(totalLen + 1);
+
+	// Set toReturn's length
+	toReturn._length = totalLen;
+
+	// Add the null Character
+	toReturn._string[totalLen] = '\0';
+
+	// The current position in relativity to the total
+	int currentPos = 0;
+
+	// Take the values from this
+	for (int i = 0; i < this->Length(); i++)
+	{
+		toReturn[currentPos] = (*this)[i];
+		currentPos++;
+	}
+
+	// Take the values from aCString
+	for (int i = 0; i < cStringLen; i++)
+	{
+		toReturn[currentPos] = aCString[i];
+		currentPos++;
+	}
+
+	return toReturn;
+}
+
 MyString MyString::operator+= (const MyString & aMyString)
 {
 	*this = (*this) + aMyString;
+
+	return *this;
+}
+
+MyString MyString::operator+= (const char * const aCString)
+{
+	*this = (*this) + aCString;
 
 	return *this;
 }
@@ -524,34 +562,64 @@ char & MyString::operator[] (int index) const
 }
 
 // >, <, >=, <=, ==, != (boolean relational test operators)
+bool MyString::operator> (const char * const aCString)
+{
+	return this->_cstr() > aCString;
+}
+
 bool MyString::operator> (const MyString & aMyString)
 {
-	return false;
+	return (*this) > aMyString._cstr();
+}
+
+bool MyString::operator< (const char * const aCString)
+{
+	return this->_cstr() < aCString;
 }
 
 bool MyString::operator< (const MyString & aMyString)
 {
-	return false;
+	return (*this) < aMyString._cstr();
+}
+
+bool MyString::operator>= (const char * const aCString)
+{
+	return this->_cstr() >= aCString;
 }
 
 bool MyString::operator>= (const MyString & aMyString)
 {
-	return false;
+	return (*this) >= aMyString._cstr();
+}
+
+bool MyString::operator<= (const char * const aCString)
+{
+	return this->_cstr() <= aCString;
 }
 
 bool MyString::operator<= (const MyString & aMyString)
 {
-	return false;
+	return (*this) <= aMyString._cstr();
+}
+
+bool MyString::operator== (const char * const aCString)
+{
+	return this->_cstr() == aCString;
 }
 
 bool MyString::operator== (const MyString & aMyString)
 {
-	return false;
+	return (*this) == aMyString._cstr();
+}
+
+bool MyString::operator!= (const char * const aCString)
+{
+	return this->_cstr() != aCString;
 }
 
 bool MyString::operator!= (const MyString & aMyString)
 {
-	return false;
+	return (*this) != aMyString._cstr();
 }
 
 // returns a pointer to the underlying c-style string

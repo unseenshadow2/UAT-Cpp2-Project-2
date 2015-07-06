@@ -42,10 +42,13 @@ int main()
 
 	// Display + and += operators
 	t2 += t1;
-	std::cout << std::endl << "+= operator test: " << t2 << std::endl << std::endl;
+	std::cout << std::endl << "+= operator test: " << t2 << std::endl;
+	t2 += " Extra Stuff at the END";
+	std::cout << "+= C string operator test: " << t2 << std::endl << std::endl;
 
 	t1 = t2 + t3;
-	std::cout << "+ operator test: " << t1 << std::endl << std::endl;
+	std::cout << "+ operator test: " << t1 << std::endl;
+	std::cout << "+ C string operator test: " << (t1 + " More shit on the end") << std::endl << std::endl;
 
 	// Visual space
 	std::cout << std::endl << " ---- ---- Methods: " << std::endl;
@@ -55,7 +58,6 @@ int main()
 	std::cout << "toupper test: " << t3 << std::endl;
 	std::cout << "getlower test: " << t3.getlower() << std::endl;
 	std::cout << "SubStr test: " << t3.SubStr(3, 5) << std::endl;
-
 
 	std::cout << std::endl;
 	std::system("pause");
