@@ -312,7 +312,7 @@ MyString MyString::SubStr(int startIndex, int numChars) const
 		}
 
 		// Copy the characters
-		for (int i = 0; i < this->Length(); i++)
+		for (int i = 0; i < numChars; i++)
 		{
 			tempString[i] = this->_string[i + startIndex];
 		}
@@ -335,11 +335,11 @@ MyString MyString::SubStr(int startIndex, int numChars) const
 // Converts the MyString to lower case
 void MyString::tolower()
 {
-	for (int i = 0; i < _length; i++)
+	for (int i = 0; i < _length; i++) // Check each character of the string
 	{
-		for (int j = 0; j < casesize; j++)
+		for (int j = 0; j < casesize; j++) // Check each character of cases[][]
 		{
-			if (_string[i] == cases[j][1])
+			if (_string[i] == cases[j][1]) // Compare the two
 			{
 				_string[i] = cases[j][0];
 			}
@@ -434,7 +434,7 @@ MyString MyString::operator= (const char *  const aCString)
 	// Check and store aCString size
 	int stringLen = MyString::cStrLen(aCString);
 	
-	if (stringLen >= CurrentCapacity())
+	if (stringLen >= CurrentCapacity()) // Don't resize if it isn't nessicary
 	{
 		// Get the numeric attributes
 		_length = stringLen;
