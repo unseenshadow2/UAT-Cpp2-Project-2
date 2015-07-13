@@ -159,14 +159,14 @@ MyString::~MyString()
 // Appends chars to the end of this MyString
 void MyString::Append(const MyString & aMyString)
 {
-
+	*this += aMyString;
 }
 
 // Takes a c style string argument
 // Appends chars to the end of this MyString
 void MyString::Append(const char * aCString)
 {
-
+	*this += aCString;
 }
 
 // Assign
@@ -174,14 +174,14 @@ void MyString::Append(const char * aCString)
 // makes this MyString a copy of aMyString
 void MyString::Assign(const MyString & aMyString)
 {
-
+	*this = aMyString;
 }
 
 // Takes  a c style string argument
 // makes this MyString contain the chars of aCString
 void MyString::Assign(const char * const aCString)
 {
-
+	*this = aCString;
 }
 
 // At
@@ -190,7 +190,12 @@ void MyString::Assign(const char * const aCString)
 // throws an exception if index is < 0 or >= _length
 char MyString::At(int index) const
 {
-	return '\0';
+	// Exception check
+	if (index < 0 || index >= this->_length)
+	{
+		throw "!Access Violation!";
+	}
+	return _string[index];
 }
 
 // Clear
@@ -198,7 +203,8 @@ char MyString::At(int index) const
 // does not change capacity
 void MyString::Clear()
 {
-
+	this->_string = '\0';
+	this->_length = 0;
 }
 
 // Makes this MyString empty
@@ -206,7 +212,7 @@ void MyString::Clear()
 // throws an exception if newCapacity < 0
 void MyString::Clear(int newCapacity)
 {
-
+	*this = MyString(newCapacity); // Use the well built constructor and equals sign to handle this
 }
 
 // Compare
@@ -219,7 +225,18 @@ void MyString::Clear(int newCapacity)
 //   alphabetically greater than this MyString
 int MyString::Compare(const MyString & aMyString)
 {
-	return 0;
+	if (*this == aMyString) // Equals
+	{
+		return 0;
+	}
+	else if (*this > aMyString) // this is alphabetically greater than the argument
+	{
+		return 1;
+	}
+	else // this is alphabetically less than the argument
+	{
+		return -1;
+	}
 }
 
 // CurrentCapacity
@@ -237,16 +254,24 @@ int MyString::CurrentCapacity() const
 //   otherwise it returns (false).
 bool MyString::Equals(const MyString & aMyString) const
 {
-	return false;
+	return this->Equals(aMyString._string);
 }
 
 // Takes a c style string argument
 // Returns (true) if the argument contains
 //   the same string of chars as this MyString,
 //   otherwise it returns (false).
-bool MyString::Equals(const char * const aCString) const
+bool MyString::Equals(const char * aCString) const
 {
-	return false;
+	for (int i = 0; i < this->Length(); i++)
+	{
+		if ((*this)[i] != aCString[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 // Find
@@ -255,8 +280,31 @@ bool MyString::Equals(const char * const aCString) const
 //   where the argument MyString was found
 //   in this MyString. If it is not found, then returns -1.
 int MyString::Find(const MyString & aMyString) const
+{	
+	// Get the furthest back that I need to check
+	int maxLength = this->Length() - aMyString.Length();
+
+	// Check if the first character is equals
+	// If so, check the rest of the characters
+	// If not, move on
+	for (int i = 0; i <= maxLength; i++)
+	{
+		if ((*this)[i] == aMyString[0])
+		{
+			if (this->SubStr(i, aMyString.Length()) == aMyString)
+			{
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+int MyString::Find(const char * ACString) const
 {
-	return 0;
+	MyString temp(ACString);
+	return this->Find(temp);
 }
 
 // Insert
@@ -266,6 +314,11 @@ int MyString::Find(const MyString & aMyString) const
 // A MyString containing the chars to be inserted
 void MyString::Insert(const MyString & aMyString, int index)
 {
+	//create temp holder for first part of this string
+	//create temp holder for last
+	//append insert and last to first.
+	MyString tempBegin = this->SubStr(0, index + 1);
+
 
 }
 
@@ -287,7 +340,31 @@ int MyString::Length(void) const
 // throws an exception if aMyString.Length() < numChars
 void MyString::Replace(int startIndex, int numChars, const MyString & aMyString)
 {
+	// Exception check
+	if (startIndex >= this->Length())
+	{
+		throw "!Access Violation!";
+	}
+	// Exception check
+	if (startIndex + numChars > this->Length())
+	{
+		throw "!Access Violation!";
+	}
+	// Exception check
+	if (aMyString.Length() < numChars)
+	{
+		throw "!Access Violation!";
+	}
 
+	//for loop for index of this string
+	for (int i = startIndex; i < startIndex + numChars; i++)
+	{
+		//for loop for proper index of aMyString
+		for (int j = 0; j < numChars; j++)
+		{
+			this->_string[i] = aMyString[j];
+		}
+	}
 }
 
 // ---- Anthony Start ----
@@ -562,7 +639,7 @@ char & MyString::operator[] (int index) const
 }
 
 // >, <, >=, <=, ==, != (boolean relational test operators)
-bool MyString::operator> (const char * const aCString)
+bool MyString::operator> (const char * aCString)
 {
 	return this->_cstr() > aCString;
 }
@@ -572,7 +649,7 @@ bool MyString::operator> (const MyString & aMyString)
 	return (*this) > aMyString._cstr();
 }
 
-bool MyString::operator< (const char * const aCString)
+bool MyString::operator< (const char * aCString)
 {
 	return this->_cstr() < aCString;
 }
@@ -582,7 +659,7 @@ bool MyString::operator< (const MyString & aMyString)
 	return (*this) < aMyString._cstr();
 }
 
-bool MyString::operator>= (const char * const aCString)
+bool MyString::operator>= (const char * aCString)
 {
 	return this->_cstr() >= aCString;
 }
@@ -592,7 +669,7 @@ bool MyString::operator>= (const MyString & aMyString)
 	return (*this) >= aMyString._cstr();
 }
 
-bool MyString::operator<= (const char * const aCString)
+bool MyString::operator<= (const char * aCString)
 {
 	return this->_cstr() <= aCString;
 }
@@ -602,9 +679,18 @@ bool MyString::operator<= (const MyString & aMyString)
 	return (*this) <= aMyString._cstr();
 }
 
-bool MyString::operator== (const char * const aCString)
+bool MyString::operator== (const char * aCString)
 {
-	return this->_cstr() == aCString;
+	// return this->_cstr() == aCString;
+	for (int i = 0; i < this->Length(); i++)
+	{
+		if ((*this)[i] != aCString[i])
+		{
+			return false;
+		}
+	}
+
+	return true;
 }
 
 bool MyString::operator== (const MyString & aMyString)
@@ -612,7 +698,7 @@ bool MyString::operator== (const MyString & aMyString)
 	return (*this) == aMyString._cstr();
 }
 
-bool MyString::operator!= (const char * const aCString)
+bool MyString::operator!= (const char * aCString)
 {
 	return this->_cstr() != aCString;
 }

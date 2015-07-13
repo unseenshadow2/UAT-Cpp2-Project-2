@@ -120,6 +120,7 @@ public:
 	//   where the argument MyString was found
 	//   in this MyString. If it is not found, then returns -1.
 	int Find(const MyString & aMyString) const;
+	int Find(const char * ACString) const;
 
 	// Insert
 	// Takes two arguments
@@ -217,17 +218,17 @@ public:
 
 	// >, <, >=, <=, ==, != (boolean relational test operators)
 	bool operator> (const MyString & aMyString);
-	bool operator> (const char * const aCString);
+	bool operator> (const char * aCString);
 	bool operator< (const MyString & aMyString);
-	bool operator< (const char * const aCString);
+	bool operator< (const char * aCString);
 	bool operator>= (const MyString & aMyString);
-	bool operator>= (const char * const aCString);
+	bool operator>= (const char * aCString);
 	bool operator<= (const MyString & aMyString);
-	bool operator<= (const char * const aCString);
+	bool operator<= (const char * aCString);
 	bool operator== (const MyString & aMyString);
-	bool operator== (const char * const aCString);
+	bool operator== (const char * aCString);
 	bool operator!= (const MyString & aMyString);
-	bool operator!= (const char * const aCString);
+	bool operator!= (const char * aCString);
 	
 	// returns a pointer to the underlying c-style string
 	const char* _cstr() const;
